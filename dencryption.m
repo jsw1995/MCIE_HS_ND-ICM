@@ -1,4 +1,4 @@
- function [ rim,rtcip11 ] = dencryption( cip,cover,dnkey,mmr,TT,cr,emb_type,im_shape,rC )
+ function [ rim,rtcip11 ] = dencryption( cip,cover,dnkey,mmr,TT,cr,emb_type,im_shape )
 %   DENCRYPTION 解密
 %   此处显示详细说明
 
@@ -13,8 +13,7 @@ a3=dnkey(11);b3=dnkey(12);x03=dnkey(13);y03=dnkey(14);z03=dnkey(15);w03=dnkey(16
 if emb_type == 1
     a=4;b=4;c=4;d=4;
 elseif emb_type == 2
-%     a=3;b=5;c=3;d=6;
-    a=4;b=4;c=4;d=4;
+    a=3;b=5;c=3;d=6;
 else
     print('只有两种类型分位方式')
 end
@@ -22,9 +21,9 @@ end
 % 提取
 [ x,y,z,w ] = IICM_4d( [x03,y03,z03,w03],[a3,b3],(m1+k1*n1)*0.5 );
 if emb_type == 1
-   rtcip = extract( cip,cover,a,b,c,d,x,y,z,w,[m/2,n/2,k],rC );
+   rtcip = extract( cip,cover,a,b,c,d,x,y,z,w,[m/2,n/2,k] );
 elseif emb_type == 2
-   rtcip = extract2( cip,cover,a,b,c,d,x,y,z,w,[m/2,n/2,k],rC );
+   rtcip = extract2( cip,cover,a,b,c,d,x,y,z,w,[m/2,n/2,k] );
 end
 
 rtcip11=rtcip;
@@ -63,7 +62,7 @@ else
     rim = cat(3,rimr,rimg,rimb);
 end
 
- end
+end
 
  
 function [ rim ] = refact( image,x,y,cr,max_x3, min_x3 )
@@ -204,7 +203,7 @@ y=y(1001:L+1000);
 
 end
 
-function [ rim ] = extract( cip,cover,a,b,c,d,x,y,z,w,im_shape,rC )
+function [ rim ] = extract( cip,cover,a,b,c,d,x,y,z,w,im_shape )
 %   EXTRACT 自己的嵌入操作(空域)
 %   此处显示详细说明
 
@@ -259,37 +258,13 @@ CH4 = mod(mod(CH3(1:m1*n1*k1),b) - mod(CH31(1:m1*n1*k1),b), b);
 CV4 = mod(mod(CV3(1:m1*n1*k1),c) - mod(CV31(1:m1*n1*k1),c), c);
 CD4 = mod(mod(CD3(1:m1*n1*k1),d) - mod(CD31(1:m1*n1*k1),d), d);
 
-% CA42 = CA4;
-% CA4(CA42==2) = rC(1)-1;
-% CA4(CA42==3) = rC(2)-1;
-% CA4(CA42==1) = rC(3)-1;
-% CA4(CA42==0) = rC(4)-1;
-% 
-% CH42=CH4;
-% CH4(CH42==2) = rC(5)-1;
-% CH4(CH42==3) = rC(6)-1;
-% CH4(CH42==1) = rC(7)-1;
-% CH4(CH42==0) = rC(8)-1;
-% 
-% CV42=CV4;
-% CV4(CV42==2) = rC(9)-1;
-% CV4(CV42==3) = rC(10)-1;
-% CV4(CV42==1) = rC(11)-1;
-% CV4(CV42==0) = rC(12)-1;
-% 
-% CD42=CD4;
-% CD4(CD42==2) = rC(13)-1;
-% CD4(CD42==3) = rC(14)-1;
-% CD4(CD42==1) = rC(15)-1;
-% CD4(CD42==0) = rC(16)-1;
-
 
 rim = CA4*(b*c*d) + CH4*(c*d) + CV4*d + CD4;
 rim = reshape(rim,[int16(m1),int16(n1),k1]);
 
 end
 
-function [ rim ] = extract2( cip,cover,a,b,c,d,x,y,z,w,im_shape,rC )
+function [ rim ] = extract2( cip,cover,a,b,c,d,x,y,z,w,im_shape )
 %   EXTRACT 自己的嵌入操作(小波变换域)
 %   此处显示详细说明
 
@@ -341,35 +316,111 @@ CH4 = mod(mod(CH3(1:m1*n1*k1),b) - mod(CH31(1:m1*n1*k1),b), b);
 CV4 = mod(mod(CV3(1:m1*n1*k1),c) - mod(CV31(1:m1*n1*k1),c), c);
 CD4 = mod(mod(CD3(1:m1*n1*k1),d) - mod(CD31(1:m1*n1*k1),d), d);
 
-% CA42 = CA4;
-% CA4(CA42==2) = rC(1)-1;
-% CA4(CA42==3) = rC(2)-1;
-% CA4(CA42==1) = rC(3)-1;
-% CA4(CA42==0) = rC(4)-1;
-% 
-% CH42=CH4;
-% CH4(CH42==2) = rC(5)-1;
-% CH4(CH42==3) = rC(6)-1;
-% CH4(CH42==1) = rC(7)-1;
-% CH4(CH42==0) = rC(8)-1;
-% 
-% 
-% CV42=CV4;
-% CV4(CV42==2) = rC(9)-1;
-% CV4(CV42==3) = rC(10)-1;
-% CV4(CV42==1) = rC(11)-1;
-% CV4(CV42==0) = rC(12)-1;
-% 
-% 
-% CD42=CD4;
-% CD4(CD42==2) = rC(13)-1;
-% CD4(CD42==3) = rC(14)-1;
-% CD4(CD42==1) = rC(15)-1;
-% CD4(CD42==0) = rC(16)-1;
-
-
 rim = CA4*(b*c*d) + CH4*(c*d) + CV4*d + CD4;
 rim = reshape(rim,[int16(m1),int16(n1),k1]);
+
+end
+
+
+function [ cip ] = scram( im,r,type )
+%   SCRAM 乱序循环移位
+%   此处显示详细说明
+
+[m,n]=size(im);
+cip = im;
+if type==1
+    [~,r1] = sort(r(1:m+n));
+    [~,r2] = sort(r(m+n+1:2*(m+n)));
+    v1 = floor(mod(r(1:2*m)*10^12,n));
+    v2 = floor(mod(r(2*m+1:2*(m+n))*10^12,m));
+    ii=0;jj=0;
+
+    for i=1:m+n
+        if r1(i)<=m
+           ii=ii+1;
+           cip(r1(i),:)=circshift(cip(r1(i),:),[0,v1(ii)]); 
+        else
+            jj=jj+1;
+            cip(:,r1(i)-m)=circshift(cip(:,r1(i)-m),[v2(jj),0]);
+        end
+    end
+
+    for i=1:m+n
+        if r2(i)<=m
+           ii=ii+1;
+           cip(r2(i),:)=circshift(cip(r2(i),:),[0,v1(ii)]); 
+        else
+            jj=jj+1;
+            cip(:,r2(i)-m)=circshift(cip(:,r2(i)-m),[v2(jj),0]);
+        end
+    end
+else
+    [~,r1] = sort(r(1:m+n));
+    v1 = floor(mod(r(1:m)*10^12,n));
+    v2 = floor(mod(r(m+1:(m+n))*10^12,m));
+    ii=0;jj=0;
+
+    for i=1:m+n
+        if r1(i)<=m
+           ii=ii+1;
+           cip(r1(i),:)=circshift(cip(r1(i),:),[0,v1(ii)]); 
+        else
+            jj=jj+1;
+            cip(:,r1(i)-m)=circshift(cip(:,r1(i)-m),[v2(jj),0]);
+        end
+    end
+end
+
+end
+
+function [ rim ] = dscram( cip,r,type )
+%   DSCRAM 解密
+%   此处显示详细说明
+
+[m,n]=size(cip);
+rim = cip;
+if type==1
+    [~,r1] = sort(r(1:m+n));
+    [~,r2] = sort(r(m+n+1:2*(m+n)));
+    v1 = -floor(mod(r(1:2*m)*10^12,n));
+    v2 = -floor(mod(r(2*m+1:2*(m+n))*10^12,m));
+    ii=2*m+1; jj=2*n+1;
+
+    for i=(m+n):-1:1
+        if r2(i)<=m
+            ii=ii-1;
+            rim(r2(i),:)=circshift(rim(r2(i),:),[0,v1(ii)]); 
+        else
+            jj=jj-1;
+            rim(:,r2(i)-m)=circshift(rim(:,r2(i)-m),[v2(jj),0]);
+        end
+    end
+
+    for i=(m+n):-1:1
+        if r1(i)<=m
+            ii=ii-1;
+            rim(r1(i),:)=circshift(rim(r1(i),:),[0,v1(ii)]); 
+        else
+            jj=jj-1;
+            rim(:,r1(i)-m)=circshift(rim(:,r1(i)-m),[v2(jj),0]);
+        end
+    end
+else
+    [~,r1] = sort(r(1:m+n));
+    v1 = -floor(mod(r(1:m)*10^12,n));
+    v2 = -floor(mod(r(m+1:(m+n))*10^12,m));
+    ii=m+1; jj=n+1;
+
+    for i=(m+n):-1:1
+        if r1(i)<=m
+            ii=ii-1;
+            rim(r1(i),:)=circshift(rim(r1(i),:),[0,v1(ii)]); 
+        else
+            jj=jj-1;
+            rim(:,r1(i)-m)=circshift(rim(:,r1(i)-m),[v2(jj),0]);
+        end
+    end
+end
 
 end
 
